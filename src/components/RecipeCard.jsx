@@ -1,6 +1,10 @@
+import { useNavigate } from 'react-router-dom';
+
 function RecipeCard({ recipe }) {
+    const navigate = useNavigate();
+
     return (
-        <div className="recipe-card">
+        <div className="recipe-card" onClick={() => navigate(`/recipes/${recipe.id}`)}>
             {recipe.image ? (
                 <>
                     <img
