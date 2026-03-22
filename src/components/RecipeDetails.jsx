@@ -1,29 +1,61 @@
+import { useNavigate } from 'react-router-dom';
+
 function RecipeDetails({ recipe }) {
+    const navigate = useNavigate();
+
     if (recipe == null) {
         return <p>No recipe found</p>;
     }
 
     return (
         <div className="recipe-details">
-            <div className="recipe-details-content">
+            <button className="back-button" onClick={() => navigate('/')}>
+                ← Back to recipes
+            </button>
+
+            <div className="recipe-header">
                 <h1>{recipe.name}</h1>
-                <p>Description: {recipe.description}</p>
-                <p>Servings: {recipe.servings}</p>
-                {recipe.recipeIngredients.map(ingredient => (
-                    <div key={ingredient.id} >
-                        <p>Ingredient Name: {ingredient.ingredientName}</p>
-                        <p>Ingredient Unit: {ingredient.ingredientUnit}</p>
-                        <p>Ingredient Quantity: {ingredient.quantity}</p>
-                        {ingredient.notes && <p>Notes: {ingredient.notes}</p>}
-                    </div>
-                ))}
-                {recipe.steps.sort((a, b) => a.stepNumber - b.stepNumber).map(step => (
-                    <div key={step.id} >
-                        <p>Step: {step.stepNumber}</p>
-                        <p>Instructions: {step.instructions}</p>
-                        {step.notes && <p>Notes: {step.notes}</p>}
-                    </div>
-                ))}
+                {recipe.description && <p className="recipe-description">{recipe.description}</p>}
+                <span className="recipe-servings">Serves {recipe.servings}</span>
+            </div>
+
+            <div className="recipe-body">
+                <section className="recipe-section">
+                    <h2>Ingredients</h2>
+                    <ul className="recipe-ingredient-list">
+                        {recipe.recipeIngredients.map(ingredient => (
+                            <li key={ingredient.id} className="recipe-ingredient-entry">
+                                <span className="ingredient-quantity">
+                                    {ingredient.quantity} {ingredient.ingredientUnit}
+                                </span>
+                                <div className="ingredient-content">
+                                    <span className="ingredient-name">{ingredient.ingredientName}</span>
+                                    {ingredient.notes && (
+                                        <span className="ingredient-notes">{ingredient.notes}</span>
+                                    )}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+
+                <section className="recipe-section">
+                    <h2>Method</h2>
+                    <ol className="recipe-step-list">
+                        {[...recipe.steps]
+                            .sort((a, b) => a.stepNumber - b.stepNumber)
+                            .map(step => (
+                                <li key={step.id} className="recipe-step-entry">
+                                    <div className="step-content">
+                                        <p className="step-instructions">{step.instructions}</p>
+                                        {step.notes && (
+                                            <p className="step-notes">💡 {step.notes}</p>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                    </ol>
+                </section>
             </div>
         </div>
     );

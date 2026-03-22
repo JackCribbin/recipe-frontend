@@ -28,8 +28,10 @@ function RecipeListPage() {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div>
-            <h1>My Recipes</h1>
+        <div className="page">
+            <div className="page-header">
+                <h1>My Recipes</h1>
+            </div>
             <RecipeList recipes={recipes} />
         </div>
     );

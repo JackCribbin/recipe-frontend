@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import RecipeDetails from '../components/RecipeDetails';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,7 +9,6 @@ function RecipeDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { id } = useParams()
-    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchRecipe = async () => {
@@ -32,9 +31,6 @@ function RecipeDetailsPage() {
 
     return (
         <div>
-            <div>
-                <button onClick={() => navigate('/')}>← Back to recipes</button>
-            </div>
             <RecipeDetails recipe={recipe} />
         </div>
     );
