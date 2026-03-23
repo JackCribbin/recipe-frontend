@@ -21,6 +21,9 @@ body {
 
 /* ---- Recipe list page ---- */
 .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 32px;
 }
 
@@ -222,4 +225,216 @@ body {
     font-size: 0.85rem;
     color: #888;
     font-style: italic;
+}
+
+/* ---- Form ---- */
+.recipe-form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 32px;
+}
+
+.form-section {
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 2px solid #eee;
+}
+
+.form-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.form-section-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field--short {
+    max-width: 200px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #333;
+    background: white;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #1a1a1a;
+}
+
+.form-input--quantity {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #333;
+    background: white;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #1a1a1a;
+}
+
+.form-select {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #333;
+    background: white;
+    cursor: pointer;
+    flex: 1;
+    transition: border-color 0.2s;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #1a1a1a;
+}
+
+/* ---- Form list items ---- */
+.form-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-list-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.form-step-item {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    gap: 16px;
+    align-items: start;
+    padding: 16px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.step-number {
+    background-color: #1a1a1a;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 8px;
+}
+
+.step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ---- Buttons ---- */
+.add-button {
+    background: none;
+    border: 1px solid #1a1a1a;
+    color: #1a1a1a;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.add-button:hover {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.remove-button {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+.remove-button:hover {
+    color: #e53e3e;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 8px;
+}
+
+.submit-button {
+    background-color: #1a1a1a;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #333;
 }

@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 
-//function RecipeForm({ formData, setFormData, handleSubmit }) {
 function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
     const navigate = useNavigate();
 
@@ -16,18 +15,11 @@ function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
     };
 
     const addIngredient = () => {
-        const newIngredient = { 
-            ingredientId: '',
-            quantity: '',
-            notes: '' 
-        };
-        setFormData({ ...formData, recipeIngredients: [...formData.recipeIngredients, newIngredient] });
+        setFormData({ ...formData, recipeIngredients: [...formData.recipeIngredients, { ingredientId: '', quantity: '', notes: '' }] });
     };
 
     const removeIngredient = (index) => {
-        const updatedIngredients = formData.recipeIngredients
-            .filter((_, i) => i !== index);
-        setFormData({ ...formData, recipeIngredients: updatedIngredients });
+        setFormData({ ...formData, recipeIngredients: formData.recipeIngredients.filter((_, i) => i !== index) });
     };
 
     const handleStepChange = (index, field, value) => {
@@ -38,12 +30,7 @@ function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
     };
 
     const addStep = () => {
-        const newStep = { 
-            stepNumber: formData.steps.length + 1, 
-            instructions: '', 
-            notes: '' 
-        };
-        setFormData({ ...formData, steps: [...formData.steps, newStep] });
+        setFormData({ ...formData, steps: [...formData.steps, { stepNumber: formData.steps.length + 1, instructions: '', notes: '' }] });
     };
 
     const removeStep = (index) => {
@@ -59,82 +46,135 @@ function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
                 ← Back to recipes
             </button>
 
-            <div className="basic-recipe-details">
-                <input 
-                    placeholder="Recipe Name e.g. Chocolate Brownies"
-                    value={formData.name}
-                    onChange={(e) => handleFieldChange('name', e.target.value)}
-                />
-                <textarea 
-                    placeholder="Recipe Description e.g. Fudgy chocolate brownies"
-                    value={formData.description}
-                    onChange={(e) => handleFieldChange('description', e.target.value)}
-                />
-                <input 
-                    type="number"
-                    value={formData.servings}
-                    onChange={(e) => handleFieldChange('servings', e.target.value)}
-                />
-            </div>
+            <h1 className="form-title">Create Recipe</h1>
 
-            <div className="recipe-ingredients">
-                <button className="add-ingredient-button" onClick={() => addIngredient()}>
-                    Add Ingredient
+            <section className="form-section">
+                <div className="form-field">
+                    <label className="form-label">Recipe Name *</label>
+                    <input
+                        className="form-input"
+                        placeholder="e.g. Chocolate Brownies"
+                        value={formData.name}
+                        onChange={(e) => handleFieldChange('name', e.target.value)}
+                    />
+                </div>
+
+                <div className="form-field">
+                    <label className="form-label">Description</label>
+                    <textarea
+                        className="form-textarea"
+                        placeholder="e.g. Rich and fudgy chocolate brownies"
+                        value={formData.description}
+                        onChange={(e) => handleFieldChange('description', e.target.value)}
+                    />
+                </div>
+
+                <div className="form-field form-field--short">
+                    <label className="form-label">Servings *</label>
+                    <input
+                        className="form-input"
+                        type="number"
+                        placeholder="e.g. 4"
+                        min="1"
+                        value={formData.servings}
+                        onChange={(e) => handleFieldChange('servings', e.target.value)}
+                    />
+                </div>
+            </section>
+
+            <section className="form-section">
+                <div className="form-section-header">
+                    <h2 className="form-section-title">Ingredients</h2>
+                    <button className="add-button" onClick={addIngredient}>
+                        + Add Ingredient
+                    </button>
+                </div>
+
+                <div className="form-list">
+                    {formData.recipeIngredients.map((recipeIngredient, index) => (
+                        <div key={index} className="form-list-item">
+                            <select
+                                className="form-select"
+                                value={recipeIngredient.ingredientId}
+                                onChange={(e) => handleIngredientChange(index, 'ingredientId', e.target.value)}
+                            >
+                                <option value="">Select ingredient</option>
+                                {ingredients.map(ingredient => (
+                                    <option key={ingredient.id} value={ingredient.id}>
+                                        {ingredient.name} ({ingredient.unit})
+                                    </option>
+                                ))}
+                            </select>
+
+                            <input
+                                className="form-input form-input--quantity"
+                                type="number"
+                                placeholder="Qty"
+                                min="0"
+                                value={recipeIngredient.quantity}
+                                onChange={(e) => handleIngredientChange(index, 'quantity', e.target.value)}
+                            />
+
+                            <input
+                                className="form-input"
+                                placeholder="Notes (optional)"
+                                value={recipeIngredient.notes}
+                                onChange={(e) => handleIngredientChange(index, 'notes', e.target.value)}
+                            />
+
+                            <button
+                                className="remove-button"
+                                onClick={() => removeIngredient(index)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <section className="form-section">
+                <div className="form-section-header">
+                    <h2 className="form-section-title">Steps</h2>
+                    <button className="add-button" onClick={addStep}>
+                        + Add Step
+                    </button>
+                </div>
+
+                <div className="form-list">
+                    {formData.steps.map((recipeStep, index) => (
+                        <div key={index} className="form-step-item">
+                            <div className="step-number">{recipeStep.stepNumber}</div>
+                            <div className="step-content">
+                                <textarea
+                                    className="form-textarea"
+                                    placeholder="Describe this step..."
+                                    value={recipeStep.instructions}
+                                    onChange={(e) => handleStepChange(index, 'instructions', e.target.value)}
+                                />
+                                <input
+                                    className="form-input"
+                                    placeholder="Tip or note (optional)"
+                                    value={recipeStep.notes}
+                                    onChange={(e) => handleStepChange(index, 'notes', e.target.value)}
+                                />
+                            </div>
+                            <button
+                                className="remove-button"
+                                onClick={() => removeStep(index)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <div className="form-actions">
+                <button className="submit-button" onClick={onSubmit}>
+                    Create Recipe
                 </button>
-                {formData.recipeIngredients.map((recipeIngredient, index) => (
-                    <div key={index} className="recipe-ingredient">
-                        <select
-                            value={recipeIngredient.ingredientId}
-                            onChange={(e) => handleIngredientChange(index, 'ingredientId', e.target.value)}>
-                            <option value="">Select an ingredient</option>
-                            {ingredients.map(ingredient => (
-                                <option key={ingredient.id} value={ingredient.id}>
-                                    {ingredient.name} ({ingredient.unit})
-                                </option>
-                            ))}
-                        </select>
-                        <input 
-                            type="number"
-                            value={recipeIngredient.quantity}
-                            onChange={(e) => handleIngredientChange(index, 'quantity', e.target.value)}
-                        />
-                        <input 
-                            placeholder="Notes e.g. use dark chocolate"
-                            value={recipeIngredient.notes}
-                            onChange={(e) => handleIngredientChange(index, 'notes', e.target.value)}
-                        />
-                        <button className="remove-ingredient-button" onClick={() => removeIngredient(index)}>
-                            Remove Ingredient
-                        </button>
-                    </div>
-                ))}
             </div>
-
-            <div className="recipe-steps">
-                <button className="add-step-button" onClick={() => addStep()}>
-                    Add Step
-                </button>
-                {formData.steps.map((recipeStep, index) => (
-                    <div key={index} className="recipe-step">
-                        <textarea 
-                            value={recipeStep.instructions}
-                            onChange={(e) => handleStepChange(index, 'instructions', e.target.value)}
-                        />
-                        <textarea 
-                            placeholder="Notes e.g. do not over-mix"
-                            value={recipeStep.notes}
-                            onChange={(e) => handleStepChange(index, 'notes', e.target.value)}
-                        />
-                        <button className="remove-step-button" onClick={() => removeStep(index)}>
-                            Remove Step
-                        </button>
-                    </div>
-                ))}
-            </div>
-
-            <button className="submit-button" onClick={() => onSubmit()}>
-                Create Recipe
-            </button>
         </div>
     );
 }

@@ -11,7 +11,7 @@ function CreateRecipePage() {
         servings: '',
         recipeIngredients: [{ ingredientId: '', quantity: '', notes: '' }],
         steps: [{ stepNumber: 1, instructions: '', notes: '' }],
-        images: []
+        images: [{ imageUrl: '', caption: '', isPrimary: true }]
     });
     const [ingredients, setIngredients] = useState([]);
     const [loading, setLoading] = useState(true);
