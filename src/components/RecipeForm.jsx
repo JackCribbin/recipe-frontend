@@ -40,6 +40,23 @@ function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
         setFormData({ ...formData, steps: updatedSteps });
     };
 
+    const handleImageChange = (index, field, value) => {
+        const updatedImages = formData.images.map((image, i) =>
+            i === index ? { ...image, [field]: value } : image
+        );
+        setFormData({ ...formData, images: updatedImages });
+    };
+
+    const addImage = () => {
+        setFormData({ ...formData, images: [...formData.images, { imageUrl: '', caption: '', isPrimary: false }] });
+    };
+
+    const removeImage = (index) => {
+        const updatedImages = formData.images
+            .filter((_, i) => i !== index);
+        setFormData({ ...formData, images: updatedImages });
+    };
+
     return (
         <div className="recipe-form">
             <button className="back-button" onClick={() => navigate('/')}>
@@ -162,6 +179,50 @@ function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
                             <button
                                 className="remove-button"
                                 onClick={() => removeStep(index)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <section className="form-section">
+                <div className="form-section-header">
+                    <h2 className="form-section-title">Images</h2>
+                    <button className="add-button" onClick={addImage}>
+                        + Add Image
+                    </button>
+                </div>
+
+                <div className="form-list">
+                    {formData.images.map((recipeImage, index) => (
+                        <div key={index} className="form-image-item">
+                            <div className="image-content">
+                                <input
+                                    className="form-input"
+                                    placeholder="Image URL (e.g., https://example.com/image.jpg)"
+                                    value={recipeImage.imageUrl}
+                                    onChange={(e) => handleImageChange(index, 'imageUrl', e.target.value)}
+                                />
+                                <input
+                                    className="form-input"
+                                    placeholder="Caption (e.g., How the cream should look after whipping)"
+                                    value={recipeImage.caption}
+                                    onChange={(e) => handleImageChange(index, 'caption', e.target.value)}
+                                />
+                                <label>
+                                    Primary Image
+                                </label>
+                                <input
+                                    type="checkbox"
+                                    checked={recipeImage.isPrimary}
+                                    onChange={(e) => handleImageChange(index, 'isPrimary', e.target.checked)}
+                                />
+                            </div>
+                            <button
+                                className="remove-button"
+                                onClick={() => removeImage(index)}
                             >
                                 ✕
                             </button>
