@@ -20,53 +20,51 @@ function EditRecipePage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchRecipe = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(`${API_URL}/recipes/${id}`);
-                if (!response.ok) throw new Error("Failed to fetch recipe");
-                const data = await response.json();
+                const [recipeResponse, ingredientsResponse] = await Promise.all([
+                    fetch(`${API_URL}/recipes/${id}`),
+                    fetch(`${API_URL}/ingredients`)
+                ]);
 
-                const retrievedFormData =
-                {
-                    name: data.name,
-                    description: data.description,
-                    servings: data.servings,
-                    recipeIngredients: data.recipeIngredients.map(ingredient => ({
-                        ingredientId: ingredient.ingredientId, quantity: ingredient.quantity, notes: ingredient.notes
+                if (!recipeResponse.ok) throw new Error("Failed to fetch recipe");
+                if (!ingredientsResponse.ok) throw new Error("Failed to fetch ingredients");
+
+                const [recipeData, ingredientsData] = await Promise.all([
+                    recipeResponse.json(),
+                    ingredientsResponse.json()
+                ]);
+
+                setFormData({
+                    name: recipeData.name,
+                    description: recipeData.description,
+                    servings: recipeData.servings,
+                    recipeIngredients: recipeData.recipeIngredients.map(ingredient => ({
+                        ingredientId: ingredient.ingredientId,
+                        quantity: ingredient.quantity,
+                        notes: ingredient.notes
                     })),
-                    steps: data.steps.map(step => ({
-                        stepNumber: step.stepNumber, instructions: step.instructions, notes: step.notes
+                    steps: recipeData.steps.map(step => ({
+                        stepNumber: step.stepNumber,
+                        instructions: step.instructions,
+                        notes: step.notes
                     })),
-                    images: data.images.map(image => ({
-                        imageUrl: image.imageUrl, caption: image.caption, isPrimary: image.isPrimary
+                    images: recipeData.images.map(image => ({
+                        imageUrl: image.imageUrl,
+                        caption: image.caption,
+                        isPrimary: image.isPrimary
                     }))
-                };
+                });
 
-                setFormData(retrievedFormData);
+                setIngredients(ingredientsData);
             } catch (err) {
                 setError(err.message);
             } finally {
                 setLoading(false);
             }
         };
-        fetchRecipe();
 
-
-
-
-        const fetchIngredients = async () => {
-            try {
-                const response = await fetch(`${API_URL}/ingredients`);
-                if (!response.ok) throw new Error("Failed to fetch ingredients");
-                const data = await response.json();
-                setIngredients(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchIngredients();
+        fetchData();
     }, []);
 
     const [submitError, setSubmitError] = useState(null);
