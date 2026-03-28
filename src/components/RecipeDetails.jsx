@@ -6,7 +6,9 @@ function RecipeDetails({ recipe }) {
     if (recipe == null) {
         return <p>No recipe found</p>;
     }
-    
+
+    const primaryImage = recipe.images.find(image => image.isPrimary);
+
     return (
         <div className="recipe-details">
             <button className="back-button" onClick={() => navigate('/')}>
@@ -19,18 +21,21 @@ function RecipeDetails({ recipe }) {
                 <span className="recipe-servings">Serves {recipe.servings}</span>
             </div>
 
-            <div className="recipe-primary-image">
-                {recipe.images.filter(image => image.isPrimary).map(image => (
+            {primaryImage && (
+                <div className="recipe-primary-image">
                     <img 
-                        src={image.imageUrl}
-                        alt={image.caption}
+                        src={primaryImage.imageUrl}
+                        alt={primaryImage.caption}
                         onError={(e) => {
                             e.target.style.display = 'none';
                             e.target.nextSibling.style.display = 'flex';
                         }}
                     />
-                ))}
-            </div>
+                    <div className="recipe-primary-image-error" style={{ display: 'none' }}>
+                        Image could not be loaded
+                    </div>
+                </div>
+            )}
 
             <div className="recipe-body">
                 <section className="recipe-section">
@@ -70,12 +75,14 @@ function RecipeDetails({ recipe }) {
                     </ol>
                 </section>
 
-                <section className="recipe-section">
-                    <h2>Images</h2>
-                    <div className="recipe-image-list">
-                        {[...recipe.images].filter(image => !image.isPrimary).map(image => (
+
+                {recipe.images.length > 1 && (
+                    <section className="recipe-section">
+                        <h2>Images</h2>
+                        <div className="recipe-image-list">
+                            {recipe.images.filter(image => !image.isPrimary).map(image => (
                                 <div key={image.id} className="recipe-image-entry">
-                                    <img
+                                    <img 
                                         src={image.imageUrl}
                                         alt={image.caption}
                                         onError={(e) => {
@@ -83,11 +90,15 @@ function RecipeDetails({ recipe }) {
                                             e.target.nextSibling.style.display = 'flex';
                                         }}
                                     />
+                                    <div className="recipe-image-list-error" style={{ display: 'none' }}>
+                                        Image could not be loaded
+                                    </div>
                                     {image.caption && <p className="image-caption">{image.caption}</p>}
                                 </div>
                             ))}
-                    </div>
-                </section>
+                        </div>
+                    </section>
+                )}
             </div>
         </div>
     );

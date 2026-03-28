@@ -236,6 +236,17 @@ body {
     margin-bottom: 32px;
 }
 
+.recipe-primary-image-error {
+    width: 100%;
+    height: 100%;
+    background-color: #f0ede8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 1.2rem;
+}
+
 .recipe-primary-image img {
     width: 100%;
     height: 100%;
@@ -246,6 +257,17 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
+}
+
+.recipe-image-list-error {
+    background-color: #ddd;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .recipe-image-entry {
