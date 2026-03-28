@@ -5,6 +5,13 @@ function RecipeCard({ recipe }) {
 
     return (
         <div className="recipe-card" onClick={() => navigate(`/recipes/${recipe.id}`)}>
+            <button className="edit-recipe-button" onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/recipes/${recipe.id}/edit`);
+                }}>
+                Edit Recipe
+            </button>
+            
             {recipe.image ? (
                 <>
                     <img

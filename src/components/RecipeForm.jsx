@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
+function RecipeForm({ formData, setFormData, ingredients, onSubmit, title, submitButtonText }) {
     const navigate = useNavigate();
 
     const handleFieldChange = (field, value) => {
@@ -63,7 +63,7 @@ function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
                 ← Back to recipes
             </button>
 
-            <h1 className="form-title">Create Recipe</h1>
+            <h1 className="form-title"> {title || 'Failed to Retrieve Title'} </h1>
 
             <section className="form-section">
                 <div className="form-field">
@@ -233,7 +233,7 @@ function RecipeForm({ formData, setFormData, ingredients, onSubmit }) {
 
             <div className="form-actions">
                 <button className="submit-button" onClick={onSubmit}>
-                    Create Recipe
+                    {submitButtonText || 'Failed to Retrieve Button Text'} 
                 </button>
             </div>
         </div>

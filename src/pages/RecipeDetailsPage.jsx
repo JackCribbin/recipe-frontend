@@ -8,7 +8,7 @@ function RecipeDetailsPage() {
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { id } = useParams()
+    const { id } = useParams();
 
     useEffect(() => {
         const fetchRecipe = async () => {

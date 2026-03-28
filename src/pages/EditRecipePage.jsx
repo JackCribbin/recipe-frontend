@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import RecipeForm from '../components/RecipeForm';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-function CreateRecipePage() {
+function EditRecipePage() {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -16,9 +16,44 @@ function CreateRecipePage() {
     const [ingredients, setIngredients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { id } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
+        const fetchRecipe = async () => {
+            try {
+                const response = await fetch(`${API_URL}/recipes/${id}`);
+                if (!response.ok) throw new Error("Failed to fetch recipe");
+                const data = await response.json();
+
+                const retrievedFormData =
+                {
+                    name: data.name,
+                    description: data.description,
+                    servings: data.servings,
+                    recipeIngredients: data.recipeIngredients.map(ingredient => ({
+                        ingredientId: ingredient.ingredientId, quantity: ingredient.quantity, notes: ingredient.notes
+                    })),
+                    steps: data.steps.map(step => ({
+                        stepNumber: step.stepNumber, instructions: step.instructions, notes: step.notes
+                    })),
+                    images: data.images.map(image => ({
+                        imageUrl: image.imageUrl, caption: image.caption, isPrimary: image.isPrimary
+                    }))
+                };
+
+                setFormData(retrievedFormData);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRecipe();
+
+
+
+
         const fetchIngredients = async () => {
             try {
                 const response = await fetch(`${API_URL}/ingredients`);
@@ -38,12 +73,12 @@ function CreateRecipePage() {
 
     const onSubmit = async () => {
         try {
-            const response = await fetch(`${API_URL}/recipes`, {
-                method: 'POST',
+            const response = await fetch(`${API_URL}/recipes/${id}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
-            if (!response.ok) throw new Error("Failed to create recipe");
+            if (!response.ok) throw new Error("Failed to edit recipe");
             navigate('/');
         } catch (err) {
             setSubmitError(err.message);
@@ -61,11 +96,11 @@ function CreateRecipePage() {
                 setFormData={setFormData}
                 ingredients={ingredients}
                 onSubmit={onSubmit}
-                title="Create New Recipe"
-                submitButtonText="Create Recipe"
-             />
+                title="Edit Recipe"
+                submitButtonText="Save Changes"
+            />
         </div>
     );
 }
 
-export default CreateRecipePage;
+export default EditRecipePage;
