@@ -6,7 +6,7 @@ function RecipeDetails({ recipe }) {
     if (recipe == null) {
         return <p>No recipe found</p>;
     }
-
+    
     return (
         <div className="recipe-details">
             <button className="back-button" onClick={() => navigate('/')}>
@@ -17,6 +17,19 @@ function RecipeDetails({ recipe }) {
                 <h1>{recipe.name}</h1>
                 {recipe.description && <p className="recipe-description">{recipe.description}</p>}
                 <span className="recipe-servings">Serves {recipe.servings}</span>
+            </div>
+
+            <div className="recipe-primary-image">
+                {recipe.images.filter(image => image.isPrimary).map(image => (
+                    <img 
+                        src={image.imageUrl}
+                        alt={image.caption}
+                        onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                        }}
+                    />
+                ))}
             </div>
 
             <div className="recipe-body">
@@ -55,6 +68,25 @@ function RecipeDetails({ recipe }) {
                                 </li>
                             ))}
                     </ol>
+                </section>
+
+                <section className="recipe-section">
+                    <h2>Images</h2>
+                    <div className="recipe-image-list">
+                        {[...recipe.images].filter(image => !image.isPrimary).map(image => (
+                                <div key={image.id} className="recipe-image-entry">
+                                    <img
+                                        src={image.imageUrl}
+                                        alt={image.caption}
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                    />
+                                    {image.caption && <p className="image-caption">{image.caption}</p>}
+                                </div>
+                            ))}
+                    </div>
                 </section>
             </div>
         </div>
