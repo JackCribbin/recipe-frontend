@@ -239,6 +239,13 @@ body {
     background-color: #e2ddd8;
 }
 
+.modal-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
 /* ---- Recipe detail page ---- */
 .recipe-details {
     max-width: 900px;
