@@ -83,7 +83,7 @@ function EditRecipePage() {
         }
     };
 
-    if (loading) return <p>Loading ingredients...</p>;
+    if (loading) return <p>Loading recipe...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (

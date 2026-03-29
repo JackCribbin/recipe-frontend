@@ -1,17 +1,36 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
-function RecipeCard({ recipe }) {
+function RecipeCard({ recipe, onRequestDelete }) {
     const navigate = useNavigate();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     return (
         <div className="recipe-card" onClick={() => navigate(`/recipes/${recipe.id}`)}>
-            <button className="edit-recipe-button" onClick={(e) => {
+            <div className={`card-menu ${menuOpen ? 'card-menu--open' : ''}`}>
+                <button className="card-menu-trigger" onClick={(e) => {
                     e.stopPropagation();
-                    navigate(`/recipes/${recipe.id}/edit`);
+                    setMenuOpen(!menuOpen);
                 }}>
-                Edit Recipe
-            </button>
-            
+                    ···
+                </button>
+                <div className="card-menu-dropdown">
+                    <button className="card-menu-item" onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/recipes/${recipe.id}/edit`);
+                    }}>
+                        ✏️ Edit
+                    </button>
+                    <button className="card-menu-item card-menu-item--danger" onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(false);
+                        onRequestDelete(recipe.id);
+                    }}>
+                        🗑️ Delete
+                    </button>
+                </div>
+            </div>
+
             {recipe.image ? (
                 <>
                     <img

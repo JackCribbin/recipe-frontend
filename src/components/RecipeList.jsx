@@ -1,6 +1,6 @@
 import RecipeCard from './RecipeCard';
 
-function RecipeList({ recipes }) {
+function RecipeList({ recipes, onRequestDelete }) {
     if (recipes.length === 0) {
         return <p>No recipes found. Add one to get started!</p>;
     }
@@ -8,7 +8,7 @@ function RecipeList({ recipes }) {
     return (
         <div className="recipe-list">
             {recipes.map(recipe => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
+                <RecipeCard key={recipe.id} recipe={recipe} onRequestDelete={onRequestDelete} />
             ))}
         </div>
     );
