@@ -1,22 +1,22 @@
-import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 function NavBar() {
-    const navigate = useNavigate();
-
     return (
-        <div className="navbar-content">
-            <div className="navbar-title" onClick={() => navigate('/')}>
-                Test Text
-            </div>
-            <div className="navbar-buttons">
-                <div onClick={() => navigate('/')}>
-                    Recipes
+        <nav className="navbar">
+            <div className="navbar-content">
+                <NavLink to="/" className="navbar-title">
+                    🍴 My Recipes
+                </NavLink>
+                <div className="navbar-links">
+                    <NavLink to="/" end className="navbar-link">
+                        Recipes
+                    </NavLink>
+                    <NavLink to="/ingredients" className="navbar-link">
+                        Ingredients
+                    </NavLink>
                 </div>
-                <div onClick={() => navigate('/ingredients')}>
-                    Ingredients
-                </div>
             </div>
-        </div>
+        </nav>
     );
 }
 

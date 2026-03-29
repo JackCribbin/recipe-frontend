@@ -20,16 +20,55 @@ body {
 }
 
 /* ---- Navigation Bar ---- */
-.navbar-content {
-    display: flex;
-    flex-direction: row;
-    gap: 40px;
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 50;
 }
 
-.navbar-buttons {
+.navbar-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 60px;
     display: flex;
-    flex-direction: row;
-    gap: 40px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-decoration: none;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 8px;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: #666;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.navbar-link:hover {
+    background-color: #f0ede8;
+    color: #1a1a1a;
+}
+
+.navbar-link.active {
+    background-color: #1a1a1a;
+    color: white;
 }
 
 /* ---- Recipe list page ---- */
@@ -687,4 +726,85 @@ body {
 
 .submit-button:hover {
     background-color: #333;
+}
+
+/* ---- Ingredient list ---- */
+.ingredient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ingredient-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    transition: z-index 0s 0.65s;
+    overflow: visible;
+    z-index: 1;
+}
+
+.ingredient-card:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    transition: z-index 0s;
+}
+
+.ingredient-card-content {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.ingredient-card-content h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    min-width: 160px;
+}
+
+.ingredient-card-content p {
+    font-size: 0.9rem;
+    color: #666;
+    min-width: 80px;
+}
+
+.ingredient-card-content {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex: 1;
+}
+
+.ingredient-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    min-width: 160px;
+}
+
+.ingredient-meta {
+    display: flex;
+    gap: 32px;
+}
+
+.ingredient-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.ingredient-meta-label {
+    font-size: 0.75rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
 }
