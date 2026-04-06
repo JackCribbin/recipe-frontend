@@ -32,7 +32,7 @@ function IngredientModal({ formData, setFormData, onSubmit, title, submitButtonT
                 </div>
 
                 <div className="modal-actions">
-                    <button className="modal-button" onClick={() => onSubmit(true)}>
+                    <button className="modal-button" onClick={() => onSubmit(true, formData)}>
                         {submitButtonText || 'Failed to Retrieve Button Text'} 
                     </button>
                     <button className="modal-button modal-button--cancel" onClick={() => onSubmit(false)}>

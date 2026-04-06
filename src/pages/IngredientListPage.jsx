@@ -38,23 +38,42 @@ function IngredientListPage() {
         fetchIngredients();
     }, []);
 
+    const [addIngredientError, setAddIngredientError] = useState(null);
+    
     const addButtonClicked = () =>
     {
         setIngredientModalTitle("Add New Ingredient");
         setIngredientModalSubmitButtonText("Add");
-        setOnSubmit(onAddIngredient);
         setIngredientData(defaultIngredientData);
+        setOnSubmit(() => onAddIngredient);
         setIngredientModalOpen(true);
     }
 
-    const [deleteError, setDeleteError] = useState(null);
-
-    const onRequestDelete = async (id) => {
-        setIngredientToDelete(id);
-        setConfirmPopupOpen(true);
+    const onAddIngredient = async (shouldAdd, formData) => {
+        try {
+            if(shouldAdd) {
+                const response = await fetch(`${API_URL}/ingredients/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) throw new Error("Failed to add ingredient");
+                const data = await response.json();
+                setIngredients([...ingredients, data]);
+                setIngredientData(defaultIngredientData)
+                setAddIngredientError(null);
+            }
+        } catch (err) {
+            setAddIngredientError(err.message);
+        }
+        finally {
+            setIngredientModalOpen(false);
+        }
     }
 
+
     const [editIngredientError, setEditIngredientError] = useState(null);
+
     const onRequestEdit = async (id) => {
         try {
             const response = await fetch(`${API_URL}/ingredients/${id}`);
@@ -63,23 +82,23 @@ function IngredientListPage() {
             setIngredientData(data);
             setIngredientModalTitle("Edit Ingredient");
             setIngredientModalSubmitButtonText("Submit");
-            setOnSubmit(onEditIngredient);
+            setOnSubmit(() => onConfirmEdit);
             setIngredientModalOpen(true);
         } catch (err) {
             setEditIngredientError(err.message);
         }
     }
-    const onEditIngredient = async (shouldEdit) => {
+
+    const onConfirmEdit = async (shouldEdit, formData) => {
         try {
             if(shouldEdit) {
-                const response = await fetch(`${API_URL}/ingredients/`, {
+                const response = await fetch(`${API_URL}/ingredients/${formData.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(ingredientData)
+                    body: JSON.stringify(formData)
                 });
                 if (!response.ok) throw new Error("Failed to add ingredient");
-                const data = await response.json();
-                setIngredients([...ingredients, data]);
+                setIngredients(ingredients.map(i => i.id === formData.id ? formData : i));
                 setIngredientData(defaultIngredientData)
                 setEditIngredientError(null);
             }
@@ -89,6 +108,14 @@ function IngredientListPage() {
         finally {
             setIngredientModalOpen(false);
         }
+    }
+
+
+    const [deleteError, setDeleteError] = useState(null);
+
+    const onRequestDelete = async (id) => {
+        setIngredientToDelete(id);
+        setConfirmPopupOpen(true);
     }
 
     const onConfirmDeletion = async (shouldDelete) => {
@@ -106,29 +133,6 @@ function IngredientListPage() {
         }
         finally {
             setConfirmPopupOpen(false);
-        }
-    }
-    
-    const [addIngredientError, setAddIngredientError] = useState(null);
-    const onAddIngredient = async (shouldAdd) => {
-        try {
-            if(shouldAdd) {
-                const response = await fetch(`${API_URL}/ingredients/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(ingredientData)
-                });
-                if (!response.ok) throw new Error("Failed to add ingredient");
-                const data = await response.json();
-                setIngredients([...ingredients, data]);
-                setIngredientData(defaultIngredientData)
-                setAddIngredientError(null);
-            }
-        } catch (err) {
-            setAddIngredientError(err.message);
-        }
-        finally {
-            setIngredientModalOpen(false);
         }
     }
 
