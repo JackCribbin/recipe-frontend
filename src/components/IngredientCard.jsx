@@ -1,8 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-function IngredientCard({ ingredient, onRequestDelete }) {
-    const navigate = useNavigate();
+function IngredientCard({ ingredient, onRequestDelete, onRequestEdit }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
@@ -17,7 +15,8 @@ function IngredientCard({ ingredient, onRequestDelete }) {
                 <div className="card-menu-dropdown">
                     <button className="card-menu-item" onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/ingredients/${ingredient.id}/edit`);
+                        setMenuOpen(false);
+                        onRequestEdit(ingredient.id);
                     }}>
                         ✏️ Edit
                     </button>

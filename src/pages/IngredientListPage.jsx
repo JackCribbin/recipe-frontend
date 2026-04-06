@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import IngredientList from '../components/IngredientList';
 import ConfirmationPopup from '../components/ConfirmationPopup';
-import AddIngredientModal from '../components/AddIngredientModal';
+import IngredientModal from '../components/IngredientModal';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const defaultIngredientData = {
@@ -16,8 +16,11 @@ function IngredientListPage() {
     const [error, setError] = useState(null);
     const [ingredientToDelete, setIngredientToDelete] = useState(null);
     const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
-    const [addIngredientOpen, setAddIngredientOpen] = useState(false);
+    const [ingredientModalOpen, setIngredientModalOpen] = useState(false);
     const [ingredientData, setIngredientData] = useState(defaultIngredientData);
+    const [ingredientModalTitle, setIngredientModalTitle] = useState();
+    const [ingredientModalSubmitButtonText, setIngredientModalSubmitButtonText] = useState();
+    const [onSubmit, setOnSubmit] = useState();
 
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -35,11 +38,57 @@ function IngredientListPage() {
         fetchIngredients();
     }, []);
 
+    const addButtonClicked = () =>
+    {
+        setIngredientModalTitle("Add New Ingredient");
+        setIngredientModalSubmitButtonText("Add");
+        setOnSubmit(onAddIngredient);
+        setIngredientData(defaultIngredientData);
+        setIngredientModalOpen(true);
+    }
+
     const [deleteError, setDeleteError] = useState(null);
 
     const onRequestDelete = async (id) => {
         setIngredientToDelete(id);
         setConfirmPopupOpen(true);
+    }
+
+    const [editIngredientError, setEditIngredientError] = useState(null);
+    const onRequestEdit = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/ingredients/${id}`);
+            if (!response.ok) throw new Error("Failed to fetch ingredients");
+            const data = await response.json();
+            setIngredientData(data);
+            setIngredientModalTitle("Edit Ingredient");
+            setIngredientModalSubmitButtonText("Submit");
+            setOnSubmit(onEditIngredient);
+            setIngredientModalOpen(true);
+        } catch (err) {
+            setEditIngredientError(err.message);
+        }
+    }
+    const onEditIngredient = async (shouldEdit) => {
+        try {
+            if(shouldEdit) {
+                const response = await fetch(`${API_URL}/ingredients/`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(ingredientData)
+                });
+                if (!response.ok) throw new Error("Failed to add ingredient");
+                const data = await response.json();
+                setIngredients([...ingredients, data]);
+                setIngredientData(defaultIngredientData)
+                setEditIngredientError(null);
+            }
+        } catch (err) {
+            setEditIngredientError(err.message);
+        }
+        finally {
+            setIngredientModalOpen(false);
+        }
     }
 
     const onConfirmDeletion = async (shouldDelete) => {
@@ -79,7 +128,7 @@ function IngredientListPage() {
             setAddIngredientError(err.message);
         }
         finally {
-            setAddIngredientOpen(false);
+            setIngredientModalOpen(false);
         }
     }
 
@@ -89,18 +138,23 @@ function IngredientListPage() {
     return (
         <div className="page">
             {deleteError && <p>Error: {deleteError}</p>}
+            {editIngredientError && <p>Error: {editIngredientError}</p>}
             {addIngredientError && <p>Error: {addIngredientError}</p>}
             <div className="page-header">
                 <h1>Ingredients</h1>
                 <button className="add-button" onClick={() => {
-                    setAddIngredientOpen(true);
+                    addButtonClicked();
                 }}>
                     + New Ingredient
                 </button>
             </div>
             {confirmPopupOpen && (<ConfirmationPopup onConfirmDeletion={onConfirmDeletion}/>)} 
-            {addIngredientOpen && (<AddIngredientModal formData={ingredientData} setFormData={setIngredientData} onAddIngredient={onAddIngredient}/>)} 
-            <IngredientList ingredients={ingredients} onRequestDelete={onRequestDelete}/>
+            {ingredientModalOpen && (<IngredientModal formData={ingredientData}
+                setFormData={setIngredientData}
+                onSubmit={onSubmit} 
+                title={ingredientModalTitle}
+                submitButtonText={ingredientModalSubmitButtonText}/>)} 
+            <IngredientList ingredients={ingredients} onRequestDelete={onRequestDelete} onRequestEdit={onRequestEdit}/>
         </div>
     );
 }

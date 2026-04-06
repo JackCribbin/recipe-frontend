@@ -1,4 +1,4 @@
-function AddIngredientModal({ formData, setFormData, onAddIngredient }) {
+function IngredientModal({ formData, setFormData, onSubmit, title, submitButtonText }) {
 
     const handleFieldChange = (field, value) => {
         setFormData({ ...formData, [field]: value });
@@ -7,7 +7,7 @@ function AddIngredientModal({ formData, setFormData, onAddIngredient }) {
     return (
         <div className="modal-backdrop">
             <div className="modal">
-                <h2 className="modal-title">Add Ingredient</h2>
+                <h2 className="modal-title">{title || 'Failed to Retrieve Title'}</h2>
                 <div className="modal-form-fields">
                     <input
                         className="form-input"
@@ -32,10 +32,10 @@ function AddIngredientModal({ formData, setFormData, onAddIngredient }) {
                 </div>
 
                 <div className="modal-actions">
-                    <button className="modal-button" onClick={() => onAddIngredient(true)}>
-                        Add Ingredient 
+                    <button className="modal-button" onClick={() => onSubmit(true)}>
+                        {submitButtonText || 'Failed to Retrieve Button Text'} 
                     </button>
-                    <button className="modal-button modal-button--cancel" onClick={() => onAddIngredient(false)}>
+                    <button className="modal-button modal-button--cancel" onClick={() => onSubmit(false)}>
                         Cancel 
                     </button>
                 </div>
@@ -44,4 +44,4 @@ function AddIngredientModal({ formData, setFormData, onAddIngredient }) {
     );
 }
 
-export default AddIngredientModal;
+export default IngredientModal;
