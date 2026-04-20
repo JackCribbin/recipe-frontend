@@ -97,7 +97,7 @@ function IngredientListPage() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                if (!response.ok) throw new Error("Failed to add ingredient");
+                if (!response.ok) throw new Error("Failed to edit ingredient");
                 setIngredients(ingredients.map(i => i.id === formData.id ? formData : i));
                 setIngredientData(defaultIngredientData)
                 setEditIngredientError(null);
@@ -124,7 +124,8 @@ function IngredientListPage() {
                 const response = await fetch(`${API_URL}/ingredients/${ingredientToDelete}`, {
                     method: 'DELETE',
                 });
-                if (!response.ok) throw new Error("Failed to delete ingredients");
+                if (response.status === 409) throw new Error("Cannot delete ingredient as it is in use by a recipe");
+                if (!response.ok) throw new Error("Failed to delete ingredient");
                 setIngredients(ingredients.filter(ingredient => ingredient.id !== ingredientToDelete));
                 setDeleteError(null);
             }
