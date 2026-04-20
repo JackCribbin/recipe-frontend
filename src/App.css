@@ -744,9 +744,9 @@ body {
     align-items: center;
     justify-content: space-between;
     position: relative;
-    transition: z-index 0s 0.65s;
     overflow: visible;
     z-index: 1;
+    transition: z-index 0s 0.65s;
 }
 
 .ingredient-card:hover {
@@ -756,28 +756,10 @@ body {
 }
 
 .ingredient-card-content {
-    display: flex;
+    display: grid;
+    grid-template-columns: 200px 120px 160px;
     align-items: center;
-    gap: 32px;
-}
-
-.ingredient-card-content h2 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    min-width: 160px;
-}
-
-.ingredient-card-content p {
-    font-size: 0.9rem;
-    color: #666;
-    min-width: 80px;
-}
-
-.ingredient-card-content {
-    display: flex;
-    align-items: center;
-    gap: 32px;
+    gap: 16px;
     flex: 1;
 }
 
@@ -785,12 +767,9 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #1a1a1a;
-    min-width: 160px;
-}
-
-.ingredient-meta {
-    display: flex;
-    gap: 32px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .ingredient-meta-item {
@@ -807,4 +786,16 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     font-weight: 600;
+}
+
+/* ---- Ingredient card mobile ---- */
+@media (max-width: 600px) {
+    .ingredient-card-content {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .ingredient-name {
+        white-space: normal;
+    }
 }
