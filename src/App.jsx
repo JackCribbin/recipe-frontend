@@ -5,12 +5,18 @@ import CreateRecipePage from './pages/CreateRecipePage';
 import EditRecipePage from './pages/EditRecipePage';
 import IngredientListPage from './pages/IngredientListPage';
 import NavBar from './components/NavBar';
+import { Toaster } from 'react-hot-toast';
 import './App.css';
 
 function App() {
     return (
         <div>
             <NavBar/>
+            <Toaster position="bottom-right"
+                toastOptions={{
+                    duration: 10000
+                }}
+            />
             <Routes>
                 <Route path="/" element={<RecipeListPage />} />
                 <Route path="/recipes/new" element={<CreateRecipePage />} />

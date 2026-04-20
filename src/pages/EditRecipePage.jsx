@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import RecipeForm from '../components/RecipeForm';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,7 +16,6 @@ function EditRecipePage() {
     });
     const [ingredients, setIngredients] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -27,8 +27,16 @@ function EditRecipePage() {
                     fetch(`${API_URL}/ingredients`)
                 ]);
 
-                if (!recipeResponse.ok) throw new Error("Failed to fetch recipe");
-                if (!ingredientsResponse.ok) throw new Error("Failed to fetch ingredients");
+                if (!recipeResponse.ok)
+                {
+                    toast.error('Failed to fetch recipe', { duration: Infinity });
+                    return;
+                }
+                if (!ingredientsResponse.ok)
+                {
+                    toast.error('Failed to fetch ingredients');
+                    return;
+                }
 
                 const [recipeData, ingredientsData] = await Promise.all([
                     recipeResponse.json(),
@@ -58,7 +66,7 @@ function EditRecipePage() {
 
                 setIngredients(ingredientsData);
             } catch (err) {
-                setError(err.message);
+                toast.error(err.message);
             } finally {
                 setLoading(false);
             }
@@ -67,7 +75,6 @@ function EditRecipePage() {
         fetchData();
     }, []);
 
-    const [submitError, setSubmitError] = useState(null);
 
     const onSubmit = async () => {
         try {
@@ -76,19 +83,22 @@ function EditRecipePage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
-            if (!response.ok) throw new Error("Failed to edit recipe");
+            if (!response.ok)
+            {
+                toast.error('Failed to edit recipe');
+                return;
+            }
             navigate('/');
+            toast.success('Recipe updated successfully');
         } catch (err) {
-            setSubmitError(err.message);
+            toast.error(err.message);
         }
     };
 
     if (loading) return <p>Loading recipe...</p>;
-    if (error) return <p>Error: {error}</p>;
 
     return (
         <div>
-            {submitError && <p>Error: {submitError}</p>}
             <RecipeForm 
                 formData={formData} 
                 setFormData={setFormData}

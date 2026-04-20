@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecipeForm from '../components/RecipeForm';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,26 +16,28 @@ function CreateRecipePage() {
     });
     const [ingredients, setIngredients] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchIngredients = async () => {
             try {
                 const response = await fetch(`${API_URL}/ingredients`);
-                if (!response.ok) throw new Error("Failed to fetch ingredients");
+                if (!response.ok)
+                {
+                    toast.error('Failed to fetch ingredients', { duration: Infinity });
+                    return;
+                }
                 const data = await response.json();
                 setIngredients(data);
             } catch (err) {
-                setError(err.message);
+                toast.error(err.message);
             } finally {
                 setLoading(false);
             }
         };
         fetchIngredients();
     }, []);
-
-    const [submitError, setSubmitError] = useState(null);
+    
 
     const onSubmit = async () => {
         try {
@@ -43,19 +46,22 @@ function CreateRecipePage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
-            if (!response.ok) throw new Error("Failed to create recipe");
+            if (!response.ok)
+            {
+                toast.error('Failed to create recipe');
+                return;
+            }
             navigate('/');
+            toast.success('Recipe added successfully');
         } catch (err) {
-            setSubmitError(err.message);
+            toast.error(err.message);
         }
     };
 
     if (loading) return <p>Loading ingredients...</p>;
-    if (error) return <p>Error: {error}</p>;
 
     return (
         <div>
-            {submitError && <p>Error: {submitError}</p>}
             <RecipeForm 
                 formData={formData} 
                 setFormData={setFormData}

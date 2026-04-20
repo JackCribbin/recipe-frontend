@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecipeList from '../components/RecipeList';
 import ConfirmationPopup from '../components/ConfirmationPopup';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function RecipeListPage() {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [recipeToDelete, setRecipeToDelete] = useState(null);
     const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
     const navigate = useNavigate();
@@ -17,11 +17,15 @@ function RecipeListPage() {
         const fetchRecipes = async () => {
             try {
                 const response = await fetch(`${API_URL}/recipes`);
-                if (!response.ok) throw new Error("Failed to fetch recipes");
+                if (!response.ok)
+                {
+                    toast.error('Failed to fetch recipes', { duration: Infinity });
+                    return;
+                }
                 const data = await response.json();
                 setRecipes(data);
             } catch (err) {
-                setError(err.message);
+                toast.error(err.message);
             } finally {
                 setLoading(false);
             }
@@ -29,8 +33,7 @@ function RecipeListPage() {
         fetchRecipes();
     }, []);
 
-    const [deleteError, setDeleteError] = useState(null);
-
+    
     const onRequestDelete = async (id) => {
         setRecipeToDelete(id);
         setConfirmPopupOpen(true);
@@ -42,12 +45,16 @@ function RecipeListPage() {
                 const response = await fetch(`${API_URL}/recipes/${recipeToDelete}`, {
                     method: 'DELETE',
                 });
-                if (!response.ok) throw new Error("Failed to delete recipe");
+                if (!response.ok)
+                {
+                    toast.error('Failed to delete recipe');
+                    return;
+                }
                 setRecipes(recipes.filter(recipe => recipe.id !== recipeToDelete));
-                setDeleteError(null);
+                toast.success('Recipe deleted successfully');
             }
         } catch (err) {
-            setDeleteError(err.message);
+            toast.error(err.message);
         }
         finally {
             setConfirmPopupOpen(false);
@@ -55,11 +62,9 @@ function RecipeListPage() {
     }
 
     if (loading) return <p>Loading recipes...</p>;
-    if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="page">
-            {deleteError && <p>Error: {deleteError}</p>}
             <div className="page-header">
                 <h1>My Recipes</h1>
                 <button className="add-button" onClick={() => navigate('/recipes/new')}>

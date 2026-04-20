@@ -1,24 +1,28 @@
 import { useState, useEffect } from 'react';
 import RecipeDetails from '../components/RecipeDetails';
 import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function RecipeDetailsPage() {
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const { id } = useParams();
 
     useEffect(() => {
         const fetchRecipe = async () => {
             try {
                 const response = await fetch(`${API_URL}/recipes/${id}`);
-                if (!response.ok) throw new Error("Failed to fetch recipes");
+                if (!response.ok)
+                {
+                    toast.error('Failed to fetch recipe', { duration: Infinity });
+                    return;
+                }
                 const data = await response.json();
                 setRecipe(data);
             } catch (err) {
-                setError(err.message);
+                toast.error(err.message);
             } finally {
                 setLoading(false);
             }
@@ -27,7 +31,6 @@ function RecipeDetailsPage() {
     }, []);
 
     if (loading) return <p>Loading recipes...</p>;
-    if (error) return <p>Error: {error}</p>;
 
     return (
         <div>

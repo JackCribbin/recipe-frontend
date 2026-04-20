@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import IngredientList from '../components/IngredientList';
 import ConfirmationPopup from '../components/ConfirmationPopup';
 import IngredientModal from '../components/IngredientModal';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const defaultIngredientData = {
@@ -13,7 +14,6 @@ const defaultIngredientData = {
 function IngredientListPage() {
     const [ingredients, setIngredients] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [ingredientToDelete, setIngredientToDelete] = useState(null);
     const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
     const [ingredientModalOpen, setIngredientModalOpen] = useState(false);
@@ -26,11 +26,15 @@ function IngredientListPage() {
         const fetchIngredients = async () => {
             try {
                 const response = await fetch(`${API_URL}/ingredients`);
-                if (!response.ok) throw new Error("Failed to fetch ingredients");
+                if (!response.ok)
+                {
+                    toast.error('Failed to fetch ingredients', { duration: Infinity });
+                    return;
+                }
                 const data = await response.json();
                 setIngredients(data);
             } catch (err) {
-                setError(err.message);
+                toast.error(err.message);
             } finally {
                 setLoading(false);
             }
@@ -38,7 +42,6 @@ function IngredientListPage() {
         fetchIngredients();
     }, []);
 
-    const [addIngredientError, setAddIngredientError] = useState(null);
     
     const addButtonClicked = () =>
     {
@@ -57,14 +60,18 @@ function IngredientListPage() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                if (!response.ok) throw new Error("Failed to add ingredient");
+                if (!response.ok)
+                {
+                    toast.error('Failed to add ingredient');
+                    return;
+                }
                 const data = await response.json();
                 setIngredients([...ingredients, data]);
                 setIngredientData(defaultIngredientData)
-                setAddIngredientError(null);
+                toast.success('Ingredient added successfully');
             }
         } catch (err) {
-            setAddIngredientError(err.message);
+            toast.error(err.message);
         }
         finally {
             setIngredientModalOpen(false);
@@ -72,12 +79,14 @@ function IngredientListPage() {
     }
 
 
-    const [editIngredientError, setEditIngredientError] = useState(null);
-
     const onRequestEdit = async (id) => {
         try {
             const response = await fetch(`${API_URL}/ingredients/${id}`);
-            if (!response.ok) throw new Error("Failed to fetch ingredients");
+            if (!response.ok)
+            {
+                toast.error('Failed to fetch ingredients');
+                return;
+            }
             const data = await response.json();
             setIngredientData(data);
             setIngredientModalTitle("Edit Ingredient");
@@ -85,7 +94,7 @@ function IngredientListPage() {
             setOnSubmit(() => onConfirmEdit);
             setIngredientModalOpen(true);
         } catch (err) {
-            setEditIngredientError(err.message);
+            toast.error(err.message);
         }
     }
 
@@ -97,21 +106,23 @@ function IngredientListPage() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                if (!response.ok) throw new Error("Failed to edit ingredient");
+                if (!response.ok)
+                {
+                    toast.error('Failed to edit ingredient');
+                    return;
+                }
                 setIngredients(ingredients.map(i => i.id === formData.id ? formData : i));
                 setIngredientData(defaultIngredientData)
-                setEditIngredientError(null);
+                toast.success('Ingredient updated successfully');
             }
         } catch (err) {
-            setEditIngredientError(err.message);
+            toast.error(err.message);
         }
         finally {
             setIngredientModalOpen(false);
         }
     }
 
-
-    const [deleteError, setDeleteError] = useState(null);
 
     const onRequestDelete = async (id) => {
         setIngredientToDelete(id);
@@ -124,13 +135,21 @@ function IngredientListPage() {
                 const response = await fetch(`${API_URL}/ingredients/${ingredientToDelete}`, {
                     method: 'DELETE',
                 });
-                if (response.status === 409) throw new Error("Cannot delete ingredient as it is in use by a recipe");
-                if (!response.ok) throw new Error("Failed to delete ingredient");
+                if (response.status === 409)
+                {
+                    toast.error('Cannot delete ingredient as it is in use by an existing recipe');
+                    return;
+                }
+                if (!response.ok)
+                {
+                    toast.error('Failed to delete ingredient');
+                    return;
+                }
                 setIngredients(ingredients.filter(ingredient => ingredient.id !== ingredientToDelete));
-                setDeleteError(null);
+                toast.success('Ingredient deleted successfully');
             }
         } catch (err) {
-            setDeleteError(err.message);
+            toast.error(err.message);
         }
         finally {
             setConfirmPopupOpen(false);
@@ -138,13 +157,9 @@ function IngredientListPage() {
     }
 
     if (loading) return <p>Loading ingredients...</p>;
-    if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="page">
-            {deleteError && <p>Error: {deleteError}</p>}
-            {editIngredientError && <p>Error: {editIngredientError}</p>}
-            {addIngredientError && <p>Error: {addIngredientError}</p>}
             <div className="page-header">
                 <h1>Ingredients</h1>
                 <button className="add-button" onClick={() => {
